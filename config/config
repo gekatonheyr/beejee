@@ -1,0 +1,12 @@
+project_name:beejee-test
+
+db.host:127.0.0.1
+db.user:root
+db.password:nopass
+db.name:beejee
+
+routes:(default='', admin='admin_')
+
+default_route:default
+default_controller:index
+default_action:index
