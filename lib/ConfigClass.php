@@ -10,20 +10,23 @@ class Config
      */
     public function __construct($config_filename)
     {
-        $config_handle = fopen('..'.DS.'config'.DS.'config', 'w');
+        if(file_exists($config_filename) and is_readable($config_filename)){
+            $config_handle = fopen($config_filename, "r");
+        }
         if(!$config_handle){
-            die("Can't open config file. Terminating script.");
+            throw new Exception("Can't open config.cfg file. Terminating script.");
         }
 
         while(!feof($config_handle)){
-            $param_string = fgets($config_handle);
+            $param_string = trim(fgets($config_handle));
+
             if($param_string == ''){
                 continue;
             }
 
-            $param_array = explode(':', $param_string);
+            $param_array = explode('::', $param_string);
             if(count($param_array) != 2){
-                die("Something is wrong with parameters in config file. Check it please by path: ../config/$config_filename");
+                die("Something is wrong with parameters in config.cfg file. Check it please by path: $config_filename");
             }
             $this->setSetting($param_array[0], $param_array[1]);
         }
@@ -43,7 +46,7 @@ class Config
      */
     public function setSetting($key, $value)
     {
-        if(array_key_exists($key, $this->settings) || in_array($value, $this->settings)){
+        if(array_key_exists($key, $this->settings)){
             die("Something trying to set parameter '$key' which already set to '$value'. Please contact developer to fix this.");
         }
         $key_type = gettype($key);
@@ -52,7 +55,20 @@ class Config
             die("Parameters and their values has to be string type, but the given one has: {$key_type} for key and {$value_type} for value.
                 Please contact developer to fix this.");
         }
+        if(str_replace(array("{","}"), '', $value) != $value){
+            $value_array = json_decode($value, true);
+            $this->settings[$key] = $value_array;
+            return $this;
+        }
         $this->settings[$key] = $value;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllSettings()
+    {
+        return $this->settings;
     }
 }

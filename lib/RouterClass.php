@@ -48,18 +48,35 @@ class Router
         return $this->method_prefix;
     }
 
-    public function __construct($uri, Config $config)
+    public function __construct($uri, $settings)
     {
         $this->uri = urldecode(trim($uri, '/'));
 
-        $routes = $config->getSetting('routes');
-        $this->route = $config->getSetting('default_route');
+        $routes = $settings['routes'];
+        $this->route = $settings['default_route'];
         $this->method_prefix = isset($routes[$this->route]) ? $routes[$this->route] : '';
-        $this->language = $config->getSetting('default_language');
-        $this->controller =$config->getSetting('default_controller');
-        $this->action = $config->getSetting('default_action');
+        $this->controller =$settings['default_controller'];
+        $this->action = $settings['default_action'];
 
-        $uri_parts = explode('?', $this->uri);
+        $path_parts = explode('?', $this->uri);
 
+        if (in_array(strtolower(current($path_parts)), array_keys($routes))) {
+            $this->route = strtolower(current($path_parts));
+            $this->method_prefix = isset($routes[$this->route]) ? $routes[$this->route] : '';
+            array_shift($path_parts);
+        }
+
+        if (current($path_parts)) {
+            $this->controller = strtolower(current($path_parts));
+            array_shift($path_parts);
+        }
+
+        if (current($path_parts)){
+            $this->action = strtolower(current($path_parts));
+            array_shift($path_parts);
+        }
+
+        $this->params = $path_parts;
     }
+
 }

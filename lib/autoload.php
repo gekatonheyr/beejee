@@ -2,7 +2,7 @@
 
 function __autoload($class_name){
     $lib_path = ROOT.DS.'lib'.DS.ucfirst(strtolower($class_name)).'Class.php';
-    $controllers_path = ROOT.DS.'controllers'.DS.str_replace('controller', '', ucfirst(strtolower($class_name))).'.Controller.php';
+    $controllers_path = ROOT.DS.'controllers'.DS.str_replace('controller', '', ucfirst(strtolower($class_name))).'Controller.php';
     $model_path = ROOT.DS.'models'.DS.ucfirst(strtolower($class_name)).'.php';
 
     if ( file_exists($lib_path) ){
