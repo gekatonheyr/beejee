@@ -34,14 +34,19 @@ class View
 
     public function render(){
         $data = $this->data;
-        $content = array();
+        if(isset($data['raw_data'])){
+            $content = array();
+            foreach($data as $key=>$value){
+                if(array_key_exists($key, $content))
+                $content[$key] = $value;
+            }
+            return $content;
+        }
+
 
         ob_start();
         include($this->view_path);
-        $content['body'] = ob_get_clean();
-        foreach($data as $key=>$value){
-            $content[$key] = $value;
-        }
+        $content = ob_get_clean();
 
         return $content;
     }

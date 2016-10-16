@@ -61,6 +61,6 @@ class App{
         $layout_path = VIEWS_PATH.DS.$layout.'.html';
         $layout_view_object = new View($this->router, compact('content'), $layout_path);
         $tmp = $layout_view_object->render();
-        echo $tmp['body'];
+        echo $tmp;
     }
 }
