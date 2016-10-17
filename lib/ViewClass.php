@@ -32,22 +32,32 @@ class View
         $this->data = $data;
     }
 
-    public function render(){
+    public function render()
+    {
         $data = $this->data;
-        if(isset($data['raw_data'])){
-            $content = array();
-            foreach($data as $key=>$value){
-                if(array_key_exists($key, $content))
-                $content[$key] = $value;
-            }
-            return $content;
-        }
-
 
         ob_start();
         include($this->view_path);
         $content = ob_get_clean();
 
         return $content;
+    }
+
+    public function createView($templateFilename = null)
+    {
+        $view_path = $this->view_path;
+        if($templateFilename && !file_exists($templateFilename)){
+            throw new Exception("Specified template file does not exist. Please check it in your views folder.");
+        }elseif($templateFilename && file_exists($templateFilename)){
+            $view_path = $templateFilename;
+        }
+
+        $data = $this->data;
+        ob_start();
+        include($view_path);
+        $content = ob_get_clean();
+        $data['content'] = $content;
+
+        return $data;
     }
 }

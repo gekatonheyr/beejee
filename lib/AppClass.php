@@ -53,7 +53,7 @@ class App{
         if(method_exists($controller_object, $controller_method)){
             $view_path = $controller_object->$controller_method($this->router->getParams());
             $view_object = new View($this->router, $controller_object->getData(), $view_path);
-            $content = $view_object->render();
+            $content = $view_object->createView();
         } else {
             throw new Exception('Method '.$controller_method.' of class '.$controller_class.' does not exist.');
         }
